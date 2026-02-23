@@ -39,7 +39,7 @@ function printOdds($arr, $arrayNumber)
     //Step 2: Use rtrim to remove leading and trailing commas
 
     $output_result = rtrim($output_result,", ");
-   
+    
     // End Solution Edits
     printScenario1Output($output_result);
     echo "</div>";
