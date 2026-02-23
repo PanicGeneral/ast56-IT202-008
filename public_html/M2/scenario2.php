@@ -38,7 +38,7 @@ function sumValues($arr, $arrayNumber)
     // Solve Challenge 2 here: Format to 2 decimal places
     //Step 3: USe the round command to round the value of the totals to 2 decimal places.
     $modifiedTotal = "?";
-    $modifiedTotal = round($total,2);
+    $modifiedTotal = number_format($total,2,'.');
     // End Solution Edits
     printScenario2Output($total, $modifiedTotal);
     echo "</div>";
