@@ -30,10 +30,13 @@ function sumValues($arr, $arrayNumber)
 
     $total = 0;
     // Start Solution Edits
+    //ast56 02/23/26
     // Solve Challenge 1 here: Sum all values
-
+    //Step 1: Iterate through array and add values 
+    //Step 2: Assign the total of those values to the varialble "Total"
 
     // Solve Challenge 2 here: Format to 2 decimal places
+    //Step 3: USe the round command to round the value of the totals to 2 decimal places.
     $modifiedTotal = "?";
 
     // End Solution Edits
