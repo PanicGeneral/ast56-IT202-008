@@ -3,7 +3,7 @@
 // @ts-nocheck
 require_once "base.php";
 
-$ucid = "mt85"; // <-- set your ucid
+$ucid = "ast56"; // <-- set your ucid
 
 // Don't edit the arrays below, they are used to test your code
 $array1 = [0.1, 0.2, 0.3, 0.4, 0.5, 0.6];
@@ -36,7 +36,7 @@ function sumValues($arr, $arrayNumber)
      $total= array_sum($arr);
     
     // Solve Challenge 2 here: Format to 2 decimal places
-    //Step 3: USe the round command to round the value of the totals to 2 decimal places.
+    //Step 3: USe the numner_format to round the value of the totals to 2 decimal places.
     $modifiedTotal = "?";
     $modifiedTotal = number_format($total,2,'.');
     // End Solution Edits
