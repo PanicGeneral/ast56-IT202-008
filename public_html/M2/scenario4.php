@@ -19,7 +19,10 @@ function transformText($arr, $arrayNumber) {
     printScenario4ArrayInfo($arr, $arrayNumber);
     // This should be solved without Copilot auto-completion, to toggle it, click the Copilot chat bubble at the top of the editor.
     //  Configure inline suggestions to "Disabled Inline Suggestions" (or similar) when writing code for this problem.
-   
+    // Step 1: sketch out plan using comments (include ucid and date)
+    // Step 2: Add/commit your outline of comments (required for full credit)
+    // Step 3: Add code to solve the problem (add/commit as needed)
+
     // Challenge 1: Remove non-alphanumeric characters except spaces
     // Challenge 2: Convert text to Title Case
     // Challenge 3: Remove leading/trailing spaces and remove duplicate spaces between words
@@ -32,9 +35,11 @@ function transformText($arr, $arrayNumber) {
     $placeholderForMiddleCharacters = "";
     foreach ($arr as $index => $text) {
         // Start Solution Edits
-        // Step 1: sketch out plan using comments (include ucid and date)
-        // Step 2: Add/commit your outline of comments (required for full credit)
-        // Step 3: Add code to solve the problem (add/commit as needed)
+        //Step 1: Iterate through array and use preg_replace to remove the non-alphanumeric characters
+        //Step 2: Use ucwords to make to convert strings to Title case
+        //Step 3: USe rtrim to remove leading and trailing spaces
+
+
 
         // End Solution Edits
     
