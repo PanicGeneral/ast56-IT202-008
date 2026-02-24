@@ -3,7 +3,7 @@
 // @ts-nocheck
 require_once "base.php";
 
-$ucid = "mt85"; // <-- set your ucid
+$ucid = "ast56"; // <-- set your ucid
 
 // Don't edit the arrays below, they are used to test your code
 $array1 = [42, -17, 89, -256, 1024, -4096, 50000, -123456];
@@ -28,6 +28,28 @@ function bePositive($arr, $arrayNumber)
 
     $output = array_fill(0, count($arr), null); // Initialize output array
     // Start Solution Edits
+    //ast56 02/23/26
+    //Step 1: Iterate through the array and use absolute value to convert values
+    
+    foreach($arr as $place => $val){
+        
+        $positive=abs($val);
+
+    //Step 2: Use an if loop to determine what data type the values of the arrays are and then use type casting to change them back
+        if (is_string($val)){
+            $output[$place]=(string)$positive;
+        }
+        elseif (is_int($val)){
+            $output[$place]=(int)$positive;
+        }
+        elseif (is_float($val)){
+            $output[$place]=(float)$positive;
+        }
+
+
+    }
+
+
     
 
     // End Solution Edits
