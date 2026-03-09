@@ -36,7 +36,7 @@ Requirements:
         </ul>
     </nav>
     <!-- Edit your UCID here -->
-    <header>Header Section (mt85)</header>
+    <header>Header Section (ast56)</header>
     <!-- Don't make any other edits to the HTML -->
     <div class="container">
         <aside id="left-sidebar">
@@ -96,8 +96,64 @@ Requirements:
 
 <script>
     /* Solve the button logic here by finding and attaching an appropriate event listener and logic*/
+    /*ast56 02/09/26*/
+
+    /*create variable for sidebars and get the id*/
+    const LeftSidebar = document.getElementById("left-sidebar");
+    const RightSidebar = document.getElementById("right-sidebar");
+
+    /*set variables for buttons*/
+    const LeftButton = LeftSidebar.querySelector("button");
+    const RightButton = RightSidebar.querySelector("button");
+
+    /*add the event that happens when the buttons are clicked*/
+    LeftButton.addEventListener("click",function(){LeftSidebar.classList.toggle("hide");});
+    RightButton.addEventListener("click",function(){RightSidebar.classList.toggle("hide");});
+
+    
 </script>
 
 <style>
     /* You're free to make whatever edits you need here, just don't override anything in the styles.css */
+    /*ast56 02/09/26*/
+
+    /*flex bot on container to line up sidebars*/
+    .container{
+        display: flex;
+        height: calc(100vh - 70px);
+    }
+    /*edit position and width of left sidebar*/
+    #left-sidebar{
+        width: 15%;
+        position: relative;
+    }
+     /*edit position and width of right sidebar*/
+    #right-sidebar{
+        width:15%;
+        position: relative;
+    }
+    /*overflow to make main fit on remaining page*/
+    main{
+        overflow-y: auto;
+       flex: 1;
+    }
+    /*establish that sidebars should nto be visible when button clicked*/
+    #left-sidebar.hide{
+        width: 0;
+    }
+    #right-sidebar.hide{
+        width: 0;
+    }
+    /*hide content within sidebars as well*/
+    .hide ul{
+        display: none;
+    }
+    /*set positon of buttons so that they do not move when sidebars minimize*/
+    #left-sidebar button{
+        position: absolute;
+    }
+    #right-sidebar button{
+        position: absolute;
+        right: 1px;
+    }
 </style>

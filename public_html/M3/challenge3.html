@@ -32,7 +32,7 @@ Requirements:
         </ul>
     </nav>
     <!-- Edit your UCID here -->
-    <header>Header Section (mt85)</header>
+    <header>Header Section (ast56)</header>
     <!-- Don't make any other edits to the HTML -->
     <nav>
         <button>Previous</button>
@@ -77,8 +77,63 @@ Requirements:
 
 <script>
     /* Solve the button logic here by finding and attaching an appropriate event listener and logic*/
+    /*ast56 02/09/26*/
+
+    /*establish varibales for the buttons and panels*/
+    const panels = document.querySelectorAll(".panel");
+    const buttons = document.querySelectorAll("nav button");
+   
+    //let panel 0 be the default panel shown when page is loaded
+    let currentPanel =0;
+
+    //hide all panels and only show one at a time
+    function showPanel(){
+        panels.forEach(panel => panel.style.display = "none");
+        panels[currentPanel].style.display ="flex";
+    }
+    //add how the pages are affected by each button press, whether going forward one panel or back
+     buttons[0].addEventListener("click",function(){
+        currentPanel--;
+        if(currentPanel < 0) {
+            currentPanel = panels.length - 1;
+        }
+        showPanel();
+    });
+    buttons[1].addEventListener("click",function(){
+        currentPanel++;
+        if(currentPanel >= panels.length) {
+            currentPanel = 0;
+        }
+        showPanel();
+    });
+   
+    
+    showPanel();
+
 </script>
 
 <style>
     /* You're free to make whatever edits you need here, just don't override anything in the styles.css */
+    /*ast56 02/09/26*/
+
+    /*establish carousel size*/
+    .carousel{
+        height:300px;
+        width:100%;
+    }
+    /*make panels fit completely in carousel and have content centered*/
+    .panel{
+        width: 100%;
+        height: 300px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    /*have the buttons centered on the page*/
+    nav button{
+        display:flex;
+        margin:10px auto;
+
+
+    }
 </style>
