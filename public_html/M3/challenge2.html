@@ -36,7 +36,7 @@ Requirements:
         </ul>
     </nav>
     <!-- Edit your UCID here -->
-    <header>Header Section (mt85)</header>
+    <header>Header Section (ast56)</header>
     <!-- Don't make any other edits to the HTML -->
     <div class="container">
         <aside id="left-sidebar">
@@ -96,8 +96,49 @@ Requirements:
 
 <script>
     /* Solve the button logic here by finding and attaching an appropriate event listener and logic*/
+    const LeftSidebar = document.getElementById("left-sidebar");
+    const RightSidebar = document.getElementById("right-sidebar");
+    const LeftButton = LeftSidebar.querySelector("button");
+    const RightButton = RightSidebar.querySelector("button");
+
+    LeftButton.addEventListener("click",function(){LeftSidebar.classList.toggle("hide");});
+    RightButton.addEventListener("click",function(){RightSidebar.classList.toggle("hide");});
+
+    
 </script>
 
 <style>
     /* You're free to make whatever edits you need here, just don't override anything in the styles.css */
+    .container{
+        display: flex;
+        height: calc(100vh - 70px);
+    }
+    #left-sidebar{
+        width: 15%;
+        position: relative;
+    }
+    #right-sidebar{
+        width:15%;
+        position: relative;
+    }
+    main{
+        overflow-y: auto;
+       flex: 1;
+    }
+    #left-sidebar.hide{
+        width: 0;
+    }
+    #right-sidebar.hide{
+        width: 0;
+    }
+    .hide ul{
+        display: none;
+    }
+    #left-sidebar button{
+        position: absolute;
+    }
+    #right-sidebar button{
+        position: absolute;
+        right: 1px;
+    }
 </style>
