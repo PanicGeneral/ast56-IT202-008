@@ -39,6 +39,7 @@ function transformText($arr, $arrayNumber) {
         //Step 1: Iterate through array and use preg_replace to remove the non-alphanumeric characters
         //Step 2: Use ucwords to make to convert strings to Title case
         //Step 3: USe trim to remove leading and trailing spaces
+       
     
     $words=preg_replace("/[^a-zA-Z0-9 ]/", "",$text);
 
