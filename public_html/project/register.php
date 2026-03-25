@@ -64,9 +64,28 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"])) {
         echo "Passwords must match<br>";
         $hasError = true;
     }
+<<<<<<< HEAD
 
     if (!$hasError) {
         echo "Success<br>";
+=======
+    
+    if (!$hasError) {
+        // comment out or delete the "success" echo
+        // echo "Success<br>";
+        // TODO 4: Hash password before storing
+        $hashed_password = password_hash($password, PASSWORD_BCRYPT);
+        $db = getDB(); // available due to the `require()` of `functions.php` 
+        // Code for inserting user data into the database
+        $stmt = $db->prepare("INSERT INTO Users (email, password) VALUES (:email, :password)");
+        try {
+            $stmt->execute([':email' => $email, ':password' => $hashed_password]);
+            echo "Successfully registered!";
+        } catch (Exception $e) {
+            echo "There was an error registering<br>"; // user-friendly message
+            error_log("Registration Error: " . var_export($e, true)); // log the technical error for debugging
+        }
+>>>>>>> 4b2fde4d5ca607cf3dfbc8cee6a07b8321bc0fe5
     }
 }
 ?>
