@@ -18,7 +18,27 @@ if (empty($diff)) {
     // When not valid, provide a user-friendly message of what specifically was wrong and set $is_valid to false.
     // Assigned should check for "self" if a valid format/value isn't provided.
     // Start validations
-    // can edit here
+if(empty($task)){
+    echo "Please provide a Task!";
+    $is_valid = false;
+}    
+
+$date = DateTime::createFromFormat('Y-m-d', $due);
+
+if (!$date || $date->format('Y-m-d') !== $due){
+    echo "Please Enter Valid Date Format YYYY-MM-DD;";
+    $is_valid = false;
+}
+
+
+if(empty($assigned)){
+    $assigned = "self";
+}
+elseif(!ctype_alnum($assigned)){
+    echo "Invalid Format! Please use only Alphanumeric characters";
+    $is_valid = false;
+}
+
     // End validations
 
     
@@ -28,8 +48,8 @@ if (empty($diff)) {
         Ensure valid and proper PDO named placeholders are used.
         https://phpdelusions.net/pdo
         */
-        $query = ""; // edit this
-        $params = []; // Apply the proper PDO placeholder to variable mapping here
+        $query = "INSERT INTO todos (task,due,assigned) VALUES (:task,:due,:assigned)"; // edit this
+        $params = [":task"=>$task,":due"=>$due,":assigned"=>$assigned]; // Apply the proper PDO placeholder to variable mapping here
         try {
             $db = getDB();
             $stmt = $db->prepare($query);
@@ -44,7 +64,12 @@ if (empty($diff)) {
             // check if the exception was related to a unique constraint
             // provide an appropriate user-friendly message for this scenario
             // Otherwise show the default message below
+            if ($e->getCode()==23000){
+                echo "Duplication Error! Entry already exists";
+            }
+            else{
             echo "There was an error inserting the record; check the logs (terminal)";
+            }
             error_log("Insert Error: " . var_export($e, true)); // shows in the terminal
         }
     } else {
@@ -62,7 +87,21 @@ if (empty($diff)) {
             <!-- design the form with proper labels and input fields with the correct types based on the SQL table.
              Wrap each label/input pair in a div tag.
              For "Assigned" ensure the default value is "self". -->
-          
+            <div>
+                <label for ="task">TASK</label>
+                <input type = "text" name="task" required/>
+            </div>
+
+            <div>
+                <label for ="due">DUE</label>
+                <input type= "date" name="due"/>
+            </div>
+             
+            <div>
+                <label for ="assigned">ASSIGNED</label>
+                <input type="text" name="assigned" value="self"/>
+            </div>
+
             <div>
                 <input type="submit" />
             </div>

@@ -12,7 +12,7 @@ if (isset($_POST["id"])) {
     Add an extra clause to update only if the complete field of the record is not set.
     https://phpdelusions.net/pdo
     */
-    $query = ""; // edit this
+    $query = "UPDATE todos"; // edit this
     $params = []; // apply mapping
     
     try {
