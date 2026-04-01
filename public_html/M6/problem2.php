@@ -39,7 +39,7 @@ function processCars($cars) {
         $Cars["age"]= $currentYear - $Cars["year"];
         //Determine if the car is a classic by comparing whether its age is greater than or equal to 25
         $Cars["classic"]= $Cars["age"] >= $classic_age;
-        $processedCars=$Cars;
+        $processedCars[]=$Cars;
     }
     // End edits
     echo "<pre>" . var_export($processedCars, true) . "</pre>";
