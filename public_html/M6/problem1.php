@@ -28,6 +28,7 @@ function processBirds($birds) {
     // TODO Objective: Extract the name, color, region into a separate multi-dimension array called $subset
     $subset = []; // result array
     // Start edits
+    //Use array_map function to loop through array items and return the selected parameters (name,regioncolor)
     $subset= array_map(function ($bird){
         return ["name"=>$bird["name"], "color"=>$bird["color"], "region"=>$bird["region"]];
     }, $birds);
