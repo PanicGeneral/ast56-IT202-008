@@ -50,7 +50,15 @@ function joinArrays($users, $activities) {
     // TODO Objective: Add logic to join both arrays on the userId property into one $joined array
     $joined = []; // result array
     // Start edits
-    
+    //Iterate through each array (user and activity) and compare the userID for matches
+    foreach($users as $Users){
+        foreach ($activities as $Activities){
+            if ($Users["userId"] == $Activities["userId"]){
+                $joined[] = array_merge($Users,$Activities);
+            }
+        }
+    }
+
 
     // End edits
     echo "<pre>" . var_export($joined, true) . "</pre>";
