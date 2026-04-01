@@ -45,7 +45,7 @@ function processCars($cars) {
     echo "<pre>" . var_export($processedCars, true) . "</pre>";
     
 }
-$ucid = "mt85"; // replace with your UCID
+$ucid = "ast56"; // replace with git statusyour UCID
 printHeader($ucid, 2); 
 ?>
 <table>

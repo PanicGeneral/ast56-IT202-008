@@ -53,7 +53,9 @@ function joinArrays($users, $activities) {
     //Iterate through each array (user and activity) and compare the userID for matches
     foreach($users as $Users){
         foreach ($activities as $Activities){
+            //Compare ID
             if ($Users["userId"] == $Activities["userId"]){
+                //Merge if ID matches
                 $joined[] = array_merge($Users,$Activities);
             }
         }
@@ -64,7 +66,7 @@ function joinArrays($users, $activities) {
     echo "<pre>" . var_export($joined, true) . "</pre>";
 }
 
-$ucid = "mt85"; // replace with your UCID
+$ucid = "ast56"; // replace with your UCID
 printHeader($ucid, 3); 
 ?>
 <table>
