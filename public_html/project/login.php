@@ -36,6 +36,7 @@ if (isset($_POST["email"], $_POST["password"])) {
     }
     // Sanitize and validate email
     $email = sanitize_email($email);
+    
     if (!is_valid_email($email)) {
         echo "Invalid email address";
         $hasError = true;
