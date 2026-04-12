@@ -31,53 +31,64 @@ if (isset($_POST["email"], $_POST["password"])) {
     $hasError = false;
 
     if (empty($email)) {
-        echo "Email must not be empty<br>";
+        //echo "Email must not be empty<br>";
+        flash("Email must not be empty","danger");
         $hasError = true;
     }
     // Sanitize and validate email
     $email = sanitize_email($email);
     
     if (!is_valid_email($email)) {
-        echo "Invalid email address";
+        //echo "Invalid email address";
+        flash("Invalid email address", "danger");
         $hasError = true;
     }
     if (empty($password)) {
-        echo "Password must not be empty<br>";
+        //echo "Password must not be empty<br>";
+        flash("Password must not be empty", "danger");
         $hasError = true;
     }
 
     if (strlen($password) < 8) {
-        echo "Password too short<br>";
+        //cho "Password too short<br>";
+        flash("Password too short","danger");
         $hasError = true;
     }
 
-    if (!$hasError) {
-
-        // TODO 4: Check password and fetch user
+     if (!$hasError) {
+        //TODO 4: Check password and fetch user
         $db = getDB();
-        $stmt = $db->prepare("SELECT id, email, password from Users where email = :email");
+        $stmt = $db->prepare("SELECT id, email, username, password from Users where email = :email");
         try {
             $r = $stmt->execute([":email" => $email]);
             if ($r) {
                 $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                $ambigify = false; // flag to indicate ambiguous login attempt (reduce TMI)
                 if ($user) {
                     $hash = $user["password"];
                     unset($user["password"]);
                     if (password_verify($password, $hash)) {
-                        echo "Welcome, $email!<br>";
-                        $_SESSION["user"] = $user;
+                        //echo "Welcome, $email!<br>";
+                        $_SESSION["user"] = $user; // add the data to the active session
                         die(header("Location: landing.php"));
                     } else {
-                        echo "Invalid password<br>";
+                        //echo "Invalid password<br>";
+                        $ambigify = true; // ambiguous login attempt
                     }
                 } else {
-                    echo "Email not found<br>";
+                    //echo "Email not found<br>";
+                    $ambigify = true; // ambiguous login attempt
+                }
+                if($ambigify) {
+                    flash("Invalid login attempt. Please check your email and password.", "danger");
                 }
             }
         } catch (Exception $e) {
-            echo "There was an error logging in<br>"; // user-friendly message
+            //echo "There was an error logging in<br>"; // user-friendly message
+            flash("There was an error logging in. Please try again later.", "danger");
             error_log("Login Error: " . var_export($e, true)); // log the technical error for debugging
         }
     }
 }
+require(__DIR__."/../../partials/flash.php");
 ?>
