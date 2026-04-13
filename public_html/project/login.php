@@ -18,8 +18,23 @@ require(__DIR__ . "/../../partials/nav.php");
     function validate(form) {
         //TODO 1: implement JavaScript validation (you'll do this on your own towards the end of Milestone1)
         //ensure it returns false for an error and true for success
+        let email = form.email.value;
+        let password = form.password.value;
 
-        return true;
+        let isValid = true;
+
+        let flashDiv = document.getElementById("flash");
+        if(flashDiv) flashDiv.innerHTML="";
+
+        if(!isNotEmpty(email)){
+            flash("Email/Username cannot be empty", "danger");
+            isValid = false;
+        }
+        if(!isNotEmpty(password)){
+            flash("Password cannot be empty", "danger");
+            isValid = false;
+        }
+        return isValid;
     }
 </script>
 <?php

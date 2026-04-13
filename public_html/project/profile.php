@@ -178,9 +178,11 @@ if (isset($_POST["currentPassword"], $_POST["newPassword"], $_POST["confirmPassw
     function validate(form) {
         let pw = form.newPassword.value;
         let con = form.confirmPassword.value;
+        let email = form.email.value;
+        let username = form.username.value;
+
         let isValid = true;
         //TODO add other client side validation....
-
         //example of using flash via javascript
         //find the flash container, create a new element, appendChild
         // NOTE: we'll extract the flash code to a function later
@@ -188,6 +190,25 @@ if (isset($_POST["currentPassword"], $_POST["newPassword"], $_POST["confirmPassw
             flash("Password and Confirm must Match","warning");
             isValid = false;
         }
+        if(pw||con){
+            if(!isValidPassword(pw)){
+                flash("Password must be at least 8 characters","danger");
+                isValid =false;
+            }
+        }
+        if(!isNotEmpty(email)){
+            flash("Email cannot be empty","danger");
+            isValid = false;
+        }else if (!isValidEmail(email)){
+            flash("Email is invalid","danger");
+            isValid =false;
+        }
+        if (!isValidUsername(username)){
+            flash ("Username is invalid", "danger");
+            isValid =false;
+        }
+
+        
         // returning false will prevent the form from submitting
         return isValid;
     }

@@ -5,11 +5,11 @@ require(__DIR__ . "/../../partials/nav.php");
 <form onsubmit="return validate(this)" method="POST">
     <div>
         <label for="email">Email</label>
-        <input id="email" type="email" name="email" required />
+        <input id="email" type="email" name="email" required value="<?php echo se($_POST, 'username'); ?>" />
     </div>
     <div>
         <label for="username">Username</label>
-        <input type="text" name="username" required maxlength="30" />
+        <input type="text" name="username" required maxlength="30" value="<?php echo se($_POST, 'username'); ?>" />
     </div>
     <div>
         <label for="pw">Password</label>
@@ -25,8 +25,41 @@ require(__DIR__ . "/../../partials/nav.php");
     function validate(form) {
         //TODO 1: implement JavaScript validation (you'll do this on your own towards the end of Milestone1)
         //ensure it returns false for an error and true for success
+        let email = form.email.value;
+        let username = form.username.value;
+        let password = form.password.value;
+        let confirm = form.confirm.value;
+        let isValid = true;
 
-        return true;
+        let flashDiv = document.getElementById("flash");
+        if (flashDiv) flashDiv.innerHTML = "";
+
+        if(!isNotEmpty(email)){
+            flash("Email cannot be empty","danger");
+            isValid=false;
+        }else if (!isValidEmail(email)){
+            flash("Invalid email address", "danger");
+            isValid = false;
+        }
+        if(!isValidUsername(username)){
+            flash("Invalid username format","danger");
+            isValid = false;
+        }
+        if(!isNotEmpty(password)){
+            flash("Password cannot be empty", "danger");
+            isValid = false;
+        } else if (!isValidPassword(password)){
+            flash("Password must be at least 8 characters long", "danger");
+            isValid = false;
+        }
+        if(!isNotEmpty(confirm)){
+            flash("Confirm cannot be empty", "danger");
+            isValid = false;
+        }else if (!isValidConfirm(password,confirm)){
+            flash("Passwords do not match", "danger");
+            isValid = false;
+        }
+        return isValid;
     }
 </script>
 <?php

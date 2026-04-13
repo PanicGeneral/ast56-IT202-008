@@ -14,3 +14,20 @@ function flash(message = "", color = "info") {
     //add the element to the DOM (if we don't it merely exists in memory)
     flash.appendChild(outerDiv);
 }
+function isValidPassword(pass) {
+    return pass?.length >= 8;
+}
+function isValidEmail(email){
+    if (!isNotEmpty(email)) return false;
+    email = email.trim();
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+function isValidUsername(username){
+    return /^[a-z0-9_-]{3,30}$/.test(username);
+}
+function isNotEmpty(value){
+    return value?.trim().length>0;
+}
+function isValidConfirm(password, confirm){
+    return password === confirm && isNotEmpty(confirm);
+}
