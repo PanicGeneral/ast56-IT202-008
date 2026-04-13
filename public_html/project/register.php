@@ -137,5 +137,4 @@ if (isset($_POST["email"], $_POST["password"], $_POST["confirm"], $_POST["userna
 ?>
 <?php
 require(__DIR__ . "/../../partials/flash.php");
-reset_session();
 ?>
