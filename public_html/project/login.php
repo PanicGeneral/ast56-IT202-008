@@ -49,7 +49,7 @@ if (isset($_POST["email"], $_POST["password"])) {
         $hasError = true;
     }
 
-    if (strlen($password) < 8) {
+    if (!is_valid_password($password)) {
         //cho "Password too short<br>";
         flash("Password too short","danger");
         $hasError = true;

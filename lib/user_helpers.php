@@ -2,8 +2,26 @@
 /**
  * Checks if user key is set in session
  */
-function is_logged_in() {
-    return isset($_SESSION["user"]);
+function is_logged_in($redirect = false, $destination = "login.php")
+{
+    $isLoggedIn = isset($_SESSION["user"]);
+    if ($redirect && !$isLoggedIn) {
+        //if this triggers, the calling script won't receive a reply since die()/exit() terminates it
+        flash("You must be logged in to view this page", "warning");
+        $path = $destination;
+        // handle relative paths
+        if (!str_starts_with($path, "/")) {
+            global $BASE_PATH; // pull from global scope of functions.php
+            // ensure BASE_PATH ends with a slash so the url doesn't get malformed
+            if (!str_ends_with($BASE_PATH, "/")) {
+                $BASE_PATH .= "/";
+            }
+            $path = $BASE_PATH . $path; // prepend the base path
+        }// the else part is for absolute paths
+
+        die(header("Location: $path"));
+    }
+    return $isLoggedIn;
 }
 /**
  * Returns the current user's username or empty string
