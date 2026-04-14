@@ -1,11 +1,18 @@
 <?php
-//note we need to go up 1 more directory
-require(__DIR__ . "/../../../partials/nav.php");
+require(__DIR__ . "/../../../lib/functions.php");
 
+if (!is_logged_in()) {
+    flash("You must be logged in to access this page", "danger");
+    header("Location: " . get_url("login.php"));
+    exit();
+}
 if (!has_role("Admin")) {
     flash("You don't have permission to view this page", "warning");
-    die(header("Location: " . get_url("landing.php")));
+    header("Location: " . get_url("landing.php"));
+    exit();
 }
+require(__DIR__ . "/../../../partials/nav.php");
+
 //attempt to apply
 if (isset($_POST["users"], $_POST["roles"])) {
     $user_ids = $_POST["users"]; //se() doesn't like arrays so we'll just do this

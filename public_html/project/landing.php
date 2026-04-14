@@ -1,4 +1,13 @@
 <?php
+
+require(__DIR__ . "/../../lib/functions.php");
+
+if (!is_logged_in()) {
+    flash("You must be logged in", "danger");
+    header("Location: " . get_url("login.php"));
+    exit();
+}
+
 require(__DIR__ . "/../../partials/nav.php");
 error_log("Session: " . var_export($_SESSION, true));
 ?>
