@@ -148,14 +148,14 @@ if (isset($_POST["currentPassword"], $_POST["newPassword"], $_POST["confirmPassw
 }
 ?>
 <h3>Profile</h3>
-<form method="POST" onsubmit="return validate(this);">
+<form method="POST">
     <div class="mb-3">
         <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="<?php se($email); ?>" />
+        <input type="email" name="email" id="email" value="<?php se($email); ?>" required />
     </div>
     <div class="mb-3">
         <label for="username">Username</label>
-        <input type="text" name="username" id="username" value="<?php se($username); ?>" />
+        <input type="text" name="username" id="username" value="<?php se($username); ?>" required pattern="^[a-z0-9_-]+$" />
     </div>
     <!-- DO NOT PRELOAD PASSWORD -->
     <div>Password Reset</div>
@@ -165,11 +165,11 @@ if (isset($_POST["currentPassword"], $_POST["newPassword"], $_POST["confirmPassw
     </div>
     <div class="mb-3">
         <label for="np">New Password</label>
-        <input type="password" name="newPassword" id="np" />
+        <input type="password" name="newPassword" id="np" minlength="8" />
     </div>
     <div class="mb-3">
         <label for="conp">Confirm Password</label>
-        <input type="password" name="confirmPassword" id="conp" />
+        <input type="password" name="confirmPassword" id="conp" minlength="8" />
     </div>
     <input type="submit" value="Update Profile" name="save" />
 </form>
