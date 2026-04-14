@@ -23,7 +23,7 @@ if (isset($_POST["name"],$_POST["description"])) {
                 flash("A role with this name already exists, please try another", "warning");
             } else {
                 flash("There was an error creating the role, please try again later", "danger");
-                error_log("Error creating role: " . var_export($e->errorInfo, true));
+                error_log ("Error creating role: " . var_export($e->errorInfo, true));
             }
         }
     }
