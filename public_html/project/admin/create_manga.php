@@ -13,7 +13,7 @@ if (isset($_POST["action"])) {
 
     if ($action === "fetch" && $text) {
 
-        //FETCH FROM API
+        // FETCH FROM API
         $result = fetch_manga($text);
 
         error_log("Data from API: " . var_export($result, true));
@@ -21,16 +21,23 @@ if (isset($_POST["action"])) {
         if ($result) {
             $manga = $result;
 
-            $manga["api_id"] = $manga["id"];
+            $manga["api_id"] = $manga["id"] ?? null;
             unset($manga["id"]);
 
             $manga["is_api"] = 1;
+            $manga["sub_title"] = $manga["sub_title"] ?? null;
+            $manga["status"] = $manga["status"] ?? null;
+            $manga["summary"] = $manga["summary"] ?? null;
+            $manga["genres"] = $manga["genres"] ?? null;
+            $manga["nsfw"] = isset($manga["nsfw"]) ? (int)$manga["nsfw"] : 0;
+
         } else {
             flash("No manga found", "warning");
         }
+
     } else if ($action === "create") {
 
-        //CREATE MANUALLY
+        // CREATE MANUALLY
         $allowed = [
             "title",
             "sub_title",
@@ -50,50 +57,37 @@ if (isset($_POST["action"])) {
 
         $manga["api_id"] = null;
         $manga["is_api"] = 0;
+        $manga["nsfw"] = isset($manga["nsfw"]) ? (int)$manga["nsfw"] : 0;
 
         error_log("Manual Manga: " . var_export($manga, true));
     } else {
         flash("You must provide a search text", "warning");
     }
 
-    //INSERT INTO DB
+    // INSERT
     if (!empty($manga)) {
-        $db = getDB();
 
-        if (!empty($manga["api_id"])) {
-            $check = "SELECT id FROM `IT202-S26-Manga` WHERE api_id = :api_id";
-            $stmt = $db->prepare($check);
-            $stmt->execute([":api_id" => $manga["api_id"]]);
-            $exists = $stmt->fetch();
+        if (empty($manga["title"])) {
+            flash("Invalid manga data", "warning");
+        } else {
+            try {
 
-            if ($exists) {
-                flash("Manga already exists in database", "warning");
-                return;
+                $r = insert("IT202-S26-Manga", $manga, ["update_duplicate" => true]);
+
+                if ($r["lastInsertId"]) {
+                    flash("Inserted record " . $r["lastInsertId"], "success");
+                } else {
+                    flash("Error inserting record", "warning");
+                }
+
+            } catch (PDOException $e) {
+                error_log("Something broke with the query " . var_export($e, true));
+                flash("An error occurred", "danger");
             }
-        }
-
-        $query = "INSERT INTO `IT202-S26-Manga` ";
-        $columns = [];
-        $params = [];
-
-        foreach ($manga as $k => $v) {
-            $columns[] = "`$k`";
-            $params[":$k"] = $v;
-        }
-
-        $query .= "(" . join(",", $columns) . ")";
-        $query .= " VALUES (" . join(",", array_keys($params)) . ")";
-
-        error_log("Query: " . $query);
-        error_log("Params: " . var_export($params, true));
-
-        try {
-            $stmt = $db->prepare($query);
-            $stmt->execute($params);
-            flash("Inserted record " . $db->lastInsertId(), "success");
-        } catch (PDOException $e) {
-            error_log("DB Error: " . var_export($e, true));
-            flash("Error inserting record", "danger");
+            catch (Exception $e) {
+                error_log("Something broke with the query " . var_export($e, true));
+                flash("An error occurred: " . $e->getMessage(), "danger");
+            }
         }
     }
 }
@@ -111,7 +105,7 @@ if (isset($_POST["action"])) {
         </li>
     </ul>
 
-    <!--FETCH FORM -->
+    <!-- FETCH FORM -->
     <div id="fetch" class="tab-target">
         <form method="POST">
             <label>Manga Search</label>
@@ -121,7 +115,7 @@ if (isset($_POST["action"])) {
         </form>
     </div>
 
-    <!--CREATE FORM -->
+    <!-- CREATE FORM -->
     <div id="create" style="display:none;" class="tab-target">
         <form method="POST">
 
@@ -147,12 +141,12 @@ if (isset($_POST["action"])) {
 </div>
 
 <script>
-    function switchTab(tab) {
-        let eles = document.getElementsByClassName("tab-target");
-        for (let ele of eles) {
-            ele.style.display = (ele.id === tab) ? "block" : "none";
-        }
+function switchTab(tab) {
+    let eles = document.getElementsByClassName("tab-target");
+    for (let ele of eles) {
+        ele.style.display = (ele.id === tab) ? "block" : "none";
     }
+}
 </script>
 
 <?php require_once(__DIR__ . "/../../../partials/flash.php"); ?>
