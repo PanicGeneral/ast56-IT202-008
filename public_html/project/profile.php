@@ -51,7 +51,7 @@ if (isset($_POST["email"], $_POST["username"])) {
         } catch (PDOException $e) {
             // handle existing email/username error
            users_check_duplicate($e);
-        } catch (Exception $e) {++
+        } catch (Exception $e) {
             flash("An unexpected error occurred, please try again", "danger");
             error_log("Unexpected Error updating user details: " . var_export($e, true));
         }
