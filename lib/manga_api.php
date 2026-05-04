@@ -13,68 +13,79 @@
  */
 function fetch_manga($text, $nsfw = false, $type = "All")
 {
-    $data = ["text" => $text,"nsfw" => $nsfw,"type" => $type];
+    $data = ["text" => $text, "nsfw" => $nsfw, "type" => $type];
     $endpoint = "https://mangaverse-api.p.rapidapi.com/manga/search";
-    $result = get($endpoint, "MANGA_API_KEY", $data, true, "mangaverse-api.p.rapidapi.com");
+    $isRapidAPI = true;
+    $rapidAPIHost = "mangaverse-api.p.rapidapi.com";
+    $result = get($endpoint, "MANGA_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
 
     error_log("API Response: " . var_export($result, true));
 
     if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
         $result = json_decode($result["response"], true);
     } else {
-        return [];
-    }
-
-    if (!isset($result["data"]) || count($result["data"]) === 0) {
-        return [];
-    }
-
-    $manga = $result["data"][0];
-
-    return [
-        "id" => se($manga, "id", ""),
-        "title" => se($manga, "title", ""),
-        "sub_title" => se($manga, "sub_title", ""),
-        "status" => se($manga, "status", ""),
-        "thumb" => se($manga, "thumb", ""),
-        "summary" => se($manga, "summary", ""),
-        "genres" => se($manga, "genres", []),
-        "nsfw" => se($manga, "nsfw", false),
-        "type" => se($manga, "type", "")
-    ];
-}
-
-/**
- * Fetch MULTIPLE manga (search results)
- */
-function search_series($text, $nsfw = false, $type = "All")
-{
-    $data = ["text" => $text,"nsfw" => $nsfw,"type" => $type];
-    $endpoint = "https://mangaverse-api.p.rapidapi.com/manga/search";
-    $result = get($endpoint, "MANGA_API_KEY", $data, true, "mangaverse-api.p.rapidapi.com");
-
-    error_log("API Response: " . var_export($result, true));
-
-    if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
-        $result = json_decode($result["response"], true);
-    } else {
-        return [];
-    }
-
-    if (!isset($result["data"])) {
-        return [];
+        $result = [];
     }
 
     $transformedResult = [];
 
-    foreach ($result["data"] as $manga) {
-        $transformedResult[] = [
-            "id" => se($manga, "id", ""),
-            "title" => se($manga, "title", ""),
-            "thumb" => se($manga, "thumb", ""),
-            "type" => se($manga, "type", ""),
-            "nsfw" => se($manga, "nsfw", false)
+    if (isset($result["data"]) && count($result["data"]) > 0) {
+
+        $manga = $result["data"][0];
+
+        // map to clean structure
+        $transformedResult = [
+            "id" => $manga["id"] ?? "",
+            "title" => $manga["title"] ?? "",
+            "sub_title" => $manga["sub_title"] ?? "",
+            "status" => $manga["status"] ?? "",
+            "thumb" => $manga["thumb"] ?? "",
+            "summary" => $manga["summary"] ?? "",
+            "genres" => isset($manga["genres"]) ? implode(",", $manga["genres"]) : "",
+            "nsfw" => $manga["nsfw"] ?? false,
+            "type" => $manga["type"] ?? ""
         ];
+    }
+
+    return $transformedResult;
+}
+
+
+/**
+ * Fetch MULTIPLE manga (search results)
+ */
+function search_series($search, $nsfw = false, $type = "All")
+{
+    $data = ["text" => $search, "nsfw" => $nsfw, "type" => $type];
+    $endpoint = "https://mangaverse-api.p.rapidapi.com/manga/search";
+    $isRapidAPI = true;
+    $rapidAPIHost = "mangaverse-api.p.rapidapi.com";
+
+    $result = get($endpoint, "MANGA_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
+
+    error_log("API Response: " . var_export($result, true));
+
+    if (se($result, "status", 400, false) == 200 && isset($result["response"])) {
+        $result = json_decode($result["response"], true);
+    } else {
+        $result = [];
+    }
+
+    $transformedResult = [];
+
+    if (isset($result["data"])) {
+
+        foreach ($result["data"] as $manga) {
+
+            $transformedResult[] = [
+                "id" => $manga["id"] ?? "",
+                "title" => $manga["title"] ?? "",
+                "thumb" => $manga["thumb"] ?? "",
+                "type" => $manga["type"] ?? "",
+                "nsfw" => $manga["nsfw"] ?? 0,
+                "is_api" => 1
+            ];
+        }
     }
 
     return $transformedResult;
