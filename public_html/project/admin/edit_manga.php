@@ -8,7 +8,6 @@ if (!has_role("Admin")) {
 
 $id = $_GET["id"] ?? -1;
 
-//UPDATE LOGIC
 if (isset($_POST["title"])) {
 
     $allowed = [
@@ -30,33 +29,27 @@ if (isset($_POST["title"])) {
         }
     }
 
-    $db = getDB();
-    $query = "UPDATE `IT202-S26-Manga` SET ";
-    $params = [];
-
-    foreach ($manga as $k => $v) {
-        if ($params) {
-            $query .= ",";
-        }
-        $query .= "`$k`=:$k";
-        $params[":$k"] = $v;
-    }
-
-    $query .= " WHERE id = :id";
-    $params[":id"] = $id;
+    $manga["id"] = $id; // required for update helper
+    $manga["nsfw"] = isset($manga["nsfw"]) ? (int)$manga["nsfw"] : 0;
 
     try {
-        $stmt = $db->prepare($query);
-        $stmt->execute($params);
-        flash("Updated manga", "success");
+        $r = update("IT202-S26-Manga", $manga);
+
+        if ($r["rowCount"]) {
+            flash("Updated " . $r["rowCount"] . " record(s)", "success");
+        } else {
+            flash("Error updating record (no changes made)", "warning");
+        }
+
     } catch (PDOException $e) {
-        echo "<pre>";
-        print_r($e->getMessage());
-        die();
+        error_log("Something broke with the query " . var_export($e, true));
+        flash("An error occurred", "danger");
+    } catch (Exception $e) {
+        error_log("Something broke with the query " . var_export($e, true));
+        flash("An error occurred: " . $e->getMessage(), "danger");
     }
 }
 
-//FETCH EXISTING DATA
 $manga = [];
 
 if ($id > -1) {

@@ -22,4 +22,5 @@ require(__DIR__ . "/api_helper.php");
 
 require(__DIR__. "/manga_api.php");
 
+require(__DIR__."/db_helpers.php");
 ?>

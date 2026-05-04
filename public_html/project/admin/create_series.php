@@ -65,6 +65,7 @@ if (isset($_POST["action"])) {
 
         $manga["api_id"] = null;
         $manga["is_api"] = 0;
+        $manga["nsfw"] = isset($manga["nsfw"]) ? (int)$manga["nsfw"] : 0;
 
         $mangaList[] = $manga;
 
@@ -73,54 +74,33 @@ if (isset($_POST["action"])) {
         flash("You must provide a search text", "warning");
     }
 
-    // INSERT INTO DB
-    if (!empty($mangaList)) {
-        $db = getDB();
+    // INSERT
+    if (count($mangaList) > 0) {
 
-        foreach ($mangaList as $manga) {
+        error_log("Transformed mangaList " . var_export($mangaList, true));
 
-            // skip invalid entries (prevents NULL title error)
-            if (empty($manga["title"])) {
-                error_log("Skipping invalid manga: " . var_export($manga, true));
-                continue;
+        try {
+            $r = insert("IT202-S26-Manga", $mangaList, [
+                "debug" => true,
+                "update_duplicate" => true
+            ]);
+
+            if ($r["lastInsertId"] || $r["rowCount"] > 0) {
+                flash("Inserted record " . $r["lastInsertId"], "success");
+            } else {
+                flash("Error inserting record", "warning");
             }
 
-            // duplicate check
-            if (!empty($manga["api_id"])) {
-                $check = "SELECT id FROM `IT202-S26-Manga` WHERE api_id = :api_id";
-                $stmt = $db->prepare($check);
-                $stmt->execute([":api_id" => $manga["api_id"]]);
-                $exists = $stmt->fetch();
-
-                if ($exists) {
-                    continue;
-                }
-            }
-
-            $query = "INSERT INTO `IT202-S26-Manga` ";
-            $columns = [];
-            $params = [];
-
-            foreach ($manga as $k => $v) {
-                $columns[] = "`$k`";
-                $params[":$k"] = $v;
-            }
-
-            $query .= "(" . join(",", $columns) . ")";
-            $query .= " VALUES (" . join(",", array_keys($params)) . ")";
-
-            error_log("Query: " . $query);
-            error_log("Params: " . var_export($params, true));
-
-            try {
-                $stmt = $db->prepare($query);
-                $stmt->execute($params);
-                flash("Inserted record " . $db->lastInsertId(), "success");
-            } catch (PDOException $e) {
-                error_log("DB Error: " . var_export($e, true));
-                flash("Error inserting record", "danger");
-            }
+        } catch (PDOException $e) {
+            error_log("Something broke with the query " . var_export($e, true));
+            flash("An error occurred", "danger");
+        } catch (Exception $e) {
+            error_log("Something broke with the query " . var_export($e, true));
+            flash("An error occurred: " . $e->getMessage(), "danger");
         }
+
+    } else {
+        flash("No manga fetched or provided", "warning");
     }
 }
 ?>
