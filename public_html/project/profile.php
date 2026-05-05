@@ -147,35 +147,54 @@ if (isset($_POST["currentPassword"], $_POST["newPassword"], $_POST["confirmPassw
     }
 }
 ?>
-<h3>Profile</h3>
-<form method="POST">
-    <div class="mb-3">
-        <label for="email">Email</label>
-        <input type="email" name="email" id="email" value="<?php se($email); ?>" required />
+<<div class="container">
+    <h3 class="text-center mb-4">Profile</h3>
+
+    <div class="row justify-content-center">
+        <div class="col-md-6 col-lg-4">
+
+            <form method="POST">
+
+                <div class="mb-3">
+                    <label for="email" class="form-label">Email</label>
+                    <input class="form-control" type="email" name="email" id="email" value="<?php se($email); ?>" required />
+                </div>
+
+                <div class="mb-3">
+                    <label for="username" class="form-label">Username</label>
+                    <input class="form-control" type="text" name="username" id="username" value="<?php se($username); ?>" required pattern="^[a-z0-9_-]+$" />
+                </div>
+
+                <div class="text-center mb-2">Password Reset</div>
+
+                <div class="mb-3">
+                    <label for="cp" class="form-label">Current Password</label>
+                    <input class="form-control" type="password" name="currentPassword" id="cp" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="np" class="form-label">New Password</label>
+                    <input class="form-control" type="password" name="newPassword" id="np" minlength="8" />
+                </div>
+
+                <div class="mb-3">
+                    <label for="conp" class="form-label">Confirm Password</label>
+                    <input class="form-control" type="password" name="confirmPassword" id="conp" minlength="8" />
+                </div>
+
+                <div class="text-center">
+                    <input class="btn btn-primary" type="submit" value="Update Profile" name="save" />
+                </div>
+
+            </form>
+
+        </div>
     </div>
-    <div class="mb-3">
-        <label for="username">Username</label>
-        <input type="text" name="username" id="username" value="<?php se($username); ?>" required pattern="^[a-z0-9_-]+$" />
-    </div>
-    <!-- DO NOT PRELOAD PASSWORD -->
-    <div>Password Reset</div>
-    <div class="mb-3">
-        <label for="cp">Current Password</label>
-        <input type="password" name="currentPassword" id="cp" />
-    </div>
-    <div class="mb-3">
-        <label for="np">New Password</label>
-        <input type="password" name="newPassword" id="np" minlength="8" />
-    </div>
-    <div class="mb-3">
-        <label for="conp">Confirm Password</label>
-        <input type="password" name="confirmPassword" id="conp" minlength="8" />
-    </div>
-    <input type="submit" value="Update Profile" name="save" />
-</form>
+</div>
 
 <script>
     function validate(form) {
+        document.getElementById("flash").innerHTML = "";
         let pw = form.newPassword.value;
         let con = form.confirmPassword.value;
         let email = form.email.value;
