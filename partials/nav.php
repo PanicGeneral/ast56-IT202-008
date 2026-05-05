@@ -26,9 +26,9 @@ require(__DIR__ . "/../lib/functions.php");
 <!-- include css and js files -->
 <!-- Include Bootstrap CSS and JS before custom content so it can be reused or overriden -->
 <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-LN+7fdVzj6u52u30Kp6M/trliBMCMKTyK833zpbD+pXdCLuTusPj697FH4R/5mcr" crossorigin="anonymous">
-<link rel="stylesheet" href="<?php get_url('styles.css', true); ?>">
+<link rel="stylesheet" href="<?php echo get_url('styles.css', true); ?>">
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.7/dist/js/bootstrap.bundle.min.js" integrity="sha384-ndDqU0Gzau9qJ1lfW4pNLlhNTkCfHzAVBReH9diLvGRem5+R9g2FzA8ZGN954O5Q" crossorigin="anonymous"></script>
-<script src="<?php get_url('helpers.js', true); ?>"></script>
+<script src="<?php echo get_url('helpers.js', true); ?>"></script>
 <nav class="navbar navbar-expand-lg bg-body-tertiary">
     <div class="container-fluid">
         <!-- Replace with your ucid -->
