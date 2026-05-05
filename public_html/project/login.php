@@ -1,4 +1,4 @@
-<?php
+<?php ob_start();
 require(__DIR__ . "/../../partials/nav.php"); // 
 
 if (isset($_POST["email"], $_POST["password"])) {
