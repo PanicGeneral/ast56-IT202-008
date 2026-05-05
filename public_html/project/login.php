@@ -1,4 +1,5 @@
 <?php
+require(__DIR__ . "/../../partials/nav.php"); // 
 
 if (isset($_POST["email"], $_POST["password"])) {
     $email = se($_POST, "email", "", false);
@@ -53,22 +54,17 @@ if (isset($_POST["email"], $_POST["password"])) {
 
                     $_SESSION["user"] = $user;
 
-                    try {
-                        $stmt = $db->prepare("SELECT Roles.name FROM Roles
-                            JOIN UserRoles ON Roles.id = UserRoles.role_id
-                            WHERE UserRoles.user_id = :user_id
-                            AND Roles.is_active = 1
-                            AND UserRoles.is_active = 1");
+                    $stmt = $db->prepare("SELECT Roles.name FROM Roles
+                        JOIN UserRoles ON Roles.id = UserRoles.role_id
+                        WHERE UserRoles.user_id = :user_id
+                        AND Roles.is_active = 1
+                        AND UserRoles.is_active = 1");
 
-                        $stmt->execute([":user_id" => $user["id"]]);
-                        $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                    } catch (Exception $e) {
-                        error_log(var_export($e, true));
-                    }
+                    $stmt->execute([":user_id" => $user["id"]]);
+                    $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
-                    $_SESSION["user"]["roles"] = isset($roles) ? $roles : [];
+                    $_SESSION["user"]["roles"] = $roles ? $roles : [];
 
-                    // ✅ FIXED REDIRECT
                     header("Location: landing.php");
                     exit;
                 } else {
@@ -89,63 +85,3 @@ if (isset($_POST["email"], $_POST["password"])) {
     }
 }
 ?>
-
-<?php require(__DIR__ . "/../../partials/nav.php"); ?>
-
-<div class="container mt-5" style="max-width: 500px;">
-    <h3 class="mb-4 text-center">Login</h3>
-
-    <form onsubmit="return validate(this)" method="POST">
-
-        <div class="mb-3">
-            <label for="email" class="form-label">Email or Username</label>
-            <input id="email" 
-                   type="text" 
-                   name="email" 
-                   class="form-control"
-                   required 
-                   value="<?php echo se($_POST, 'email'); ?>" />
-        </div>
-
-        <div class="mb-3">
-            <label for="pw" class="form-label">Password</label>
-            <input type="password" 
-                   id="pw" 
-                   name="password" 
-                   class="form-control"
-                   required 
-                   minlength="8" />
-        </div>
-
-        <div class="d-grid">
-            <button class="btn btn-primary" type="submit">Login</button>
-        </div>
-
-    </form>
-</div>
-
-<script>
-function validate(form) {
-    let email = form.email.value;
-    let password = form.password.value;
-
-    let isValid = true;
-
-    let flashDiv = document.getElementById("flash");
-    if (flashDiv) flashDiv.innerHTML = "";
-
-    if (!isNotEmpty(email)) {
-        flash("Email/Username cannot be empty", "danger");
-        isValid = false;
-    }
-
-    if (!isValidPassword(password)) {
-        flash("Password must be at least 8 characters", "danger");
-        isValid = false;
-    }
-
-    return isValid;
-}
-</script>
-
-<?php require(__DIR__ . "/../../partials/flash.php"); ?>
