@@ -51,53 +51,31 @@ try {
 ?>
 <h3>List Roles</h3>
 <form method="POST">
-    <!-- value is used to create a sticky form (maintains the data used in the initial form submission) -->
-    <input type="search" name="role" placeholder="Role Filter" value="<?php se($_POST, "role"); ?>" />
-    <input type="submit" value="Search" />
+    <?php render_input([
+        "type" => "search",
+        "name" => "role",
+        "placeholder" => "Role Filter",
+        "value" => se($_POST, "role")
+    ]); ?>
+
+    <?php render_button([
+        "text" => "Search",
+        "type" => "submit"
+    ]); ?>
 </form>
 <small>Note: If you disabled Admin, you won't be able to login as Admin again until you re-enable it (may require a manual table edit).</small>
-<table>
-    <thead>
-        <th>ID</th>
-        <th>Name</th>
-        <th>Description</th>
-        <th>Active</th>
-        <th>Action</th>
-    </thead>
-    <tbody>
-        <?php if (empty($roles)) : ?>
-            <tr>
-                <td colspan="100%">No roles</td>
-            </tr>
-        <?php else : ?>
-            <?php foreach ($roles as $role) : ?>
-                <tr>
-                    <td><?php se($role, "id"); ?></td>
-                    <td><?php se($role, "name"); ?></td>
-                    <td><?php se($role, "description"); ?></td>
-                    <td><?php echo (se($role, "is_active", 0, false) ? "active" : "disabled"); ?></td>
-                    <td>
-                        <!-- nested form to handle toggling the role -->
-                        <form method="POST">
-                            <!-- hidden field to carry the id, the user shouldn't be prompted to edit this-->
-                            <input type="hidden" name="role_id" value="<?php se($role, 'id'); ?>" />
-                            <!-- used to persist the search criteria since this is a different form -->
-                            <?php if (isset($search) && !empty($search)) : ?>
-                                <input type="hidden" name="role" value="<?php se($search, null); ?>" />
-                            <?php endif; ?>
-                            <!-- toggle button to change the role's active status -->
-                            <?php if (se($role, "is_active", 0, false)) : ?>
-                                <input type="submit" value="Disable" />
-                            <?php else : ?>
-                                <input type="submit" value="Enable" />
-                            <?php endif; ?>
-                        </form>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        <?php endif; ?>
-    </tbody>
-</table>
+<?php
+$table = [
+    "data" => $roles,
+    "table_class" => "table table-striped table-bordered",
+    "post_self_form" => [
+        "name" => "role_id",
+        "label" => "Toggle",
+        "classes" => "btn btn-secondary"
+    ]
+];
+render_table($table);
+?>
 <?php
 //note we need to go up 1 more directory
 require_once(__DIR__ . "/../../../partials/flash.php");
