@@ -13,7 +13,7 @@ $type = se($_GET, "type", "", false);
 $nsfw = se($_GET, "nsfw", "", false);
 
 /*
- * Build query dynamically (like professor did)
+ * Build query dynamically
  */
 $params = [];
 $query = "SELECT * FROM `IT202-S26-Manga` WHERE 1=1";
@@ -54,7 +54,7 @@ try {
 }
 
 /*
- * Form config (like professor)
+ * Form config
  */
 $form = [
     [
