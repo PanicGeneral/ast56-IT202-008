@@ -106,7 +106,7 @@ if (isset($_POST["action"])) {
 ?>
 
 <div class="container-fluid">
-    <h3>Create or Fetch Manga Series</h3>
+    <h3>Create or Fetch Multiple Mangas</h3>
 
     <ul class="nav nav-tabs">
         <li class="nav-item">

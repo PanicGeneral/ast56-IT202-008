@@ -1,14 +1,6 @@
 <?php
 
 /**
- * This file is a wrapper for our API calls.
- * Here, each endpoint needed will be exposes as a function.
- * The function will take the parameters needed for the API call and return the result.
- * The function will also handle the API key and endpoint.
- * Requires the api_helper.php file and load_api_keys.php file.
- */
-
-/**
  * Fetch ONE manga (0–1 result)
  */
 function fetch_manga($text, $nsfw = false, $type = "All")
@@ -17,6 +9,7 @@ function fetch_manga($text, $nsfw = false, $type = "All")
     $endpoint = "https://mangaverse-api.p.rapidapi.com/manga/search";
     $isRapidAPI = true;
     $rapidAPIHost = "mangaverse-api.p.rapidapi.com";
+
     $result = get($endpoint, "MANGA_API_KEY", $data, $isRapidAPI, $rapidAPIHost);
 
     error_log("API Response: " . var_export($result, true));
@@ -33,15 +26,17 @@ function fetch_manga($text, $nsfw = false, $type = "All")
 
         $manga = $result["data"][0];
 
-        // map to clean structure
         $transformedResult = [
             "id" => $manga["id"] ?? "",
             "title" => $manga["title"] ?? "",
             "sub_title" => $manga["sub_title"] ?? "",
-            "status" => $manga["status"] ?? "",
+            "status" => $manga["status"] ?? "Unknown",
             "thumb" => $manga["thumb"] ?? "",
             "summary" => $manga["summary"] ?? "",
-            "genres" => isset($manga["genres"]) ? implode(",", $manga["genres"]) : "",
+
+            // FIX: convert array → string
+            "genres" => isset($manga["genres"]) ? implode(", ", $manga["genres"]) : "N/A",
+
             "nsfw" => $manga["nsfw"] ?? false,
             "type" => $manga["type"] ?? ""
         ];
@@ -73,7 +68,7 @@ function search_series($search, $nsfw = false, $type = "All")
 
     $transformedResult = [];
 
-    if (isset($result["data"])) {
+    if (isset($result["data"]) && is_array($result["data"])) {
 
         foreach ($result["data"] as $manga) {
 
@@ -82,6 +77,11 @@ function search_series($search, $nsfw = false, $type = "All")
                 "title" => $manga["title"] ?? "",
                 "thumb" => $manga["thumb"] ?? "",
                 "type" => $manga["type"] ?? "",
+                "status" => $manga["status"] ?? "Unknown",
+
+                // FIX: convert genres array to string
+                "genres" => isset($manga["genres"]) ? implode(", ", $manga["genres"]) : "N/A",
+
                 "nsfw" => $manga["nsfw"] ?? 0,
                 "is_api" => 1
             ];

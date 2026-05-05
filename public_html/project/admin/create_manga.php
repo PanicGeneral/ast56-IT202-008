@@ -108,7 +108,7 @@ if (isset($_POST["action"])) {
     <!-- FETCH FORM -->
     <div id="fetch" class="tab-target">
         <form method="POST">
-            <label>Manga Search</label>
+            <label>Fetch Manga</label>
             <input type="text" name="text" required>
             <input type="hidden" name="action" value="fetch">
             <input type="submit" value="Fetch" class="btn btn-primary">
