@@ -1,7 +1,4 @@
 <?php
-// DO LOGIC FIRST (before any HTML or nav.php)
-
-require(__DIR__ . "/../../lib/helpers.php"); // adjust if your project uses a different include
 
 if (isset($_POST["email"], $_POST["password"])) {
     $email = se($_POST, "email", "", false);
