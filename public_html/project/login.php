@@ -1,66 +1,82 @@
 <?php
-ob_start();// Temp fix to resolve output buffer issues that send the header() early that cause issues with the header("Location:...") below
 require(__DIR__ . "/../../partials/nav.php");
 ?>
-<h3>Login</h3>
-<form onsubmit="return validate(this)" method="POST">
-    <div>
-        <label for="email">Email or Username</label>
-        <input id="email" type="text" name="email" required value="<?php echo se($_POST, 'email'); ?>" />
-    </div>
-    <div>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" name="password" required minlength="8" />
-    </div>
-    <input type="submit" value="Login" />
-</form>
+
+<div class="container mt-5" style="max-width: 500px;">
+    <h3 class="mb-4 text-center">Login</h3>
+
+    <form onsubmit="return validate(this)" method="POST">
+
+        <div class="mb-3">
+            <label for="email" class="form-label">Email or Username</label>
+            <input id="email" 
+                   type="text" 
+                   name="email" 
+                   class="form-control"
+                   required 
+                   value="<?php echo se($_POST, 'email'); ?>" />
+        </div>
+
+        <div class="mb-3">
+            <label for="pw" class="form-label">Password</label>
+            <input type="password" 
+                   id="pw" 
+                   name="password" 
+                   class="form-control"
+                   required 
+                   minlength="8" />
+        </div>
+
+        <div class="d-grid">
+            <button class="btn btn-primary" type="submit">Login</button>
+        </div>
+
+    </form>
+</div>
+
 <script>
-    function validate(form) {
-        //TODO 1: implement JavaScript validation (you'll do this on your own towards the end of Milestone1)
-        //ensure it returns false for an error and true for success
-        let email = form.email.value;
-        let password = form.password.value;
+function validate(form) {
+    let email = form.email.value;
+    let password = form.password.value;
 
-        let isValid = true;
+    let isValid = true;
 
-        let flashDiv = document.getElementById("flash");
-        if(flashDiv) flashDiv.innerHTML="";
+    let flashDiv = document.getElementById("flash");
+    if (flashDiv) flashDiv.innerHTML = "";
 
-        if(!isNotEmpty(email)){
-            flash("Email/Username cannot be empty", "danger");
-            isValid = false;
-        }
-        if(!isNotEmpty(password)){
-            flash("Password cannot be empty", "danger");
-            isValid = false;
-        }
-        return isValid;
+    if (!isNotEmpty(email)) {
+        flash("Email/Username cannot be empty", "danger");
+        isValid = false;
     }
+
+    if (!isValidPassword(password)) {
+        flash("Password must be at least 8 characters", "danger");
+        isValid = false;
+    }
+
+    return isValid;
+}
 </script>
+
 <?php
-//TODO 2: add PHP Code
 if (isset($_POST["email"], $_POST["password"])) {
-    // still leveraging the property as "email", but it can be a username
     $email = se($_POST, "email", "", false);
     $password = se($_POST, "password", "", false);
-    // TODO 3: validate/use
+
     $hasError = false;
 
     if (empty($email)) {
         flash("Email/Username must not be empty.", "danger");
         $hasError = true;
     }
-    if (str_contains($email, "@")) {
-        // if it contains an @, treat it as an email
 
-        // Sanitize and validate email
+    if (str_contains($email, "@")) {
         $email = sanitize_email($email);
         if (!is_valid_email($email)) {
             flash("Invalid email address.", "danger");
             $hasError = true;
         }
     } else {
-        // otherwise, treat it as a username
         $email = strtolower(trim($email));
         if (!is_valid_username($email)) {
             flash("Username must be lowercase, alphanumerical, and can only contain _ or -", "danger");
@@ -68,72 +84,67 @@ if (isset($_POST["email"], $_POST["password"])) {
         }
     }
 
-
     if (empty($password)) {
         flash("Password must not be empty.", "danger");
         $hasError = true;
     }
 
     if (!is_valid_password($password)) {
-        //echo "Password too short<br>";
         flash("Password must be at least 8 characters long.", "danger");
         $hasError = true;
     }
 
     if (!$hasError) {
-
-
-        //TODO 4: Check password and fetch user
         $db = getDB();
-        // fetch by email or username
-        $stmt = $db->prepare("SELECT id, email, password, username from Users where email = :email OR username = :email");
+        $stmt = $db->prepare("SELECT id, email, password, username FROM Users WHERE email = :email OR username = :email");
+
         try {
-            $r = $stmt->execute([":email" => $email]);
-            if ($r) {
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                $ambigify = false; // flag to indicate ambiguous login attempt (reduce TMI)
-                if ($user) {
-                    $hash = $user["password"];
-                    unset($user["password"]);
-                    if (password_verify($password, $hash)) {
+            $stmt->execute([":email" => $email]);
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-                        $_SESSION["user"] = $user; // add the data to the active session
-                        try {
-                            //lookup potential roles
-                            $stmt = $db->prepare("SELECT Roles.name FROM Roles
-                                JOIN UserRoles on Roles.id = UserRoles.role_id
-                                where UserRoles.user_id = :user_id and Roles.is_active = 1 
-                                and UserRoles.is_active = 1");
-                            $stmt->execute([":user_id" => get_user_id()]);
-                            $roles = $stmt->fetchAll(PDO::FETCH_ASSOC); //fetch all since we'll want multiple
-                        } catch (Exception $e) {
-                            error_log(var_export($e, true));
-                        }
-                        //save roles or empty array
-                        $_SESSION["user"]["roles"] = isset($roles) ? $roles : [];
+            $ambigify = false;
 
-                        die(header("Location: landing.php"));
-                    } else {
-                        //echo "Invalid password<br>";
-                        $ambigify = true; // ambiguous login attempt
+            if ($user) {
+                $hash = $user["password"];
+                unset($user["password"]);
+
+                if (password_verify($password, $hash)) {
+
+                    $_SESSION["user"] = $user;
+
+                    try {
+                        $stmt = $db->prepare("SELECT Roles.name FROM Roles
+                            JOIN UserRoles ON Roles.id = UserRoles.role_id
+                            WHERE UserRoles.user_id = :user_id
+                            AND Roles.is_active = 1
+                            AND UserRoles.is_active = 1");
+
+                        $stmt->execute([":user_id" => get_user_id()]);
+                        $roles = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    } catch (Exception $e) {
+                        error_log(var_export($e, true));
                     }
+
+                    $_SESSION["user"]["roles"] = isset($roles) ? $roles : [];
+
+                    die(header("Location: landing.php"));
                 } else {
-                    //echo "Email not found<br>";
-                    $ambigify = true; // ambiguous login attempt
+                    $ambigify = true;
                 }
-                if ($ambigify) {
-                    flash("Invalid login attempt. Please check your email and password.", "danger");
-                }
+            } else {
+                $ambigify = true;
             }
+
+            if ($ambigify) {
+                flash("Invalid login attempt. Please check your email and password.", "danger");
+            }
+
         } catch (Exception $e) {
-            //echo "There was an error logging in<br>"; // user-friendly message
             flash("There was an error logging in. Please try again later.", "danger");
-            error_log("Login Error: " . var_export($e, true)); // log the technical error for debugging
+            error_log("Login Error: " . var_export($e, true));
         }
     }
 }
 ?>
 
-<?php
-require(__DIR__ . "/../../partials/flash.php");
-?>
+<?php require(__DIR__ . "/../../partials/flash.php"); ?>

@@ -1,26 +1,35 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
+
+// represent form as data
+$form = [
+    ["type" => "email", "id" => "email", "name" => "email", "label" => "Email", "value" => se($_POST, "email"), "rules" => ["required" => true]],
+    [
+        "type" => "text",
+        "id" => "username",
+        "name" => "username",
+        "label" => "Username",
+        "value" => se($_POST, "username"),
+        "rules" => [
+            "required" => true,
+            "maxlength" => 30,
+            "title" => "3-16 lowercase letters, numbers, underscores, or hyphens"
+        ]
+    ],
+    ["type" => "password", "id" => "password", "name" => "password", "label" => "Password", "rules" => ["required" => true, "minlength" => 8]],
+    ["type" => "password", "id" => "confirm", "name" => "confirm", "label" => "Confirm Password", "rules" => ["required" => true, "minlength" => 8]],
+];
 ?>
-<h3>Register</h3>
-<form onsubmit="return validate(this)" method="POST">
-    <div>
-        <label for="email">Email</label>
-        <input id="email" type="email" name="email" required value="<?php echo se($_POST, 'username'); ?>" />
-    </div>
-    <div>
-        <label for="username">Username</label>
-        <input type="text" name="username" required maxlength="30" value="<?php echo se($_POST, 'username'); ?>" />
-    </div>
-    <div>
-        <label for="pw">Password</label>
-        <input type="password" id="pw" name="password" required minlength="8" />
-    </div>
-    <div>
-        <label for="confirm">Confirm</label>
-        <input type="password" name="confirm" required minlength="8" />
-    </div>
-    <input type="submit" value="Register" />
-</form>
+<div class="container-fluid">
+    <h3>Register</h3>
+    <form onsubmit="return validate(this)" method="POST">
+        <?php foreach ($form as $field): ?>
+            <?php render_input($field); ?>
+        <?php endforeach; ?>
+        <?php render_button(["text" => "Register", "type" => "submit"]); ?>
+    </form>
+</div>
+
 <script>
     function validate(form) {
         //TODO 1: implement JavaScript validation (you'll do this on your own towards the end of Milestone1)
