@@ -12,6 +12,11 @@ $text = se($_GET, "text", "", false);
 $type = se($_GET, "type", "", false);
 $nsfw = se($_GET, "nsfw", "", false);
 
+$limit = (int)se($_GET, "limit", 10, false);
+if ($limit < 1 || $limit > 100) {
+    $limit = 10;
+}
+
 /*
  * Build query dynamically
  */
@@ -33,6 +38,10 @@ if ($nsfw !== "" && ($nsfw === "0" || $nsfw === "1")) {
     $params[":nsfw"] = $nsfw;
 }
 
+$query .= " LIMIT :limit";
+$params[":limit"] = $limit;
+
+
 /*
  * Run query
  */
@@ -40,7 +49,12 @@ $db = getDB();
 $stmt = $db->prepare($query);
 
 foreach ($params as $key => $value) {
-    $stmt->bindValue($key, $value);
+
+    if ($key === ":limit") {
+        $stmt->bindValue($key, $value, PDO::PARAM_INT);
+    } else {
+        $stmt->bindValue($key, $value);
+    }
 }
 
 $results = [];
