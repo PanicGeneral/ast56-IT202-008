@@ -3,6 +3,14 @@ require(__DIR__ . "/../../../partials/nav.php");
 
 $id = se($_GET, "id", -1, false);
 
+if ($id < 1) {
+
+    flash("Invalid manga id", "danger");
+
+    header("Location: " . get_url("admin/list_manga.php"));
+    exit();
+}
+
 $db = getDB();
 
 $stmt = $db->prepare("SELECT * FROM `IT202-S26-Manga`
@@ -18,57 +26,99 @@ try {
 
     $result = $stmt->fetch(PDO::FETCH_ASSOC);
 
+    if (!$result) {
+
+        flash("Manga not found", "warning");
+
+        header("Location: " . get_url("admin/list_manga.php"));
+        exit();
+    }
+
 } catch (PDOException $e) {
 
     error_log(var_export($e, true));
 
     flash("Error loading manga", "danger");
+
+    header("Location: " . get_url("admin/list_manga.php"));
+    exit();
 }
 ?>
 
-<div class="container">
+<style>
 
-    <?php if ($result) : ?>
+    .manga-card {
+        max-width: 900px;
+        margin: auto;
+        border-radius: 12px;
+    }
 
-        <h2><?php se($result, "title"); ?></h2>
+    .manga-img {
+        border-radius: 10px;
+        max-width: 100%;
+    }
 
-        <p>
-            <strong>Sub Title:</strong>
-            <?php se($result, "sub_title"); ?>
-        </p>
+</style>
 
-        <p>
-            <strong>Status:</strong>
-            <?php se($result, "status"); ?>
-        </p>
+<div class="container mt-4">
 
-        <p>
-            <strong>Type:</strong>
-            <?php se($result, "type"); ?>
-        </p>
+    <div class="card shadow manga-card">
 
-        <p>
-            <strong>Genres:</strong>
-            <?php se($result, "genres"); ?>
-        </p>
+        <div class="card-body">
 
-        <p>
-            <strong>Summary:</strong>
-            <?php se($result, "summary"); ?>
-        </p>
+            <?php if ($result) : ?>
 
-        <?php if (!empty($result["thumb"])) : ?>
+                <h2><?php se($result, "title"); ?></h2>
 
-            <img src="<?php se($result, "thumb"); ?>"
-                 width="250">
+                <p>
+                    <strong>Sub Title:</strong>
+                    <?php se($result, "sub_title"); ?>
+                </p>
 
-        <?php endif; ?>
+                <p>
+                    <strong>Status:</strong>
+                    <?php se($result, "status"); ?>
+                </p>
 
-    <?php else : ?>
+                <p>
+                    <strong>Type:</strong>
+                    <?php se($result, "type"); ?>
+                </p>
 
-        <p>Manga not found</p>
+                <p>
+                    <strong>Genres:</strong>
+                    <?php se($result, "genres"); ?>
+                </p>
 
-    <?php endif; ?>
+                <p>
+                    <strong>Summary:</strong>
+                    <?php se($result, "summary"); ?>
+                </p>
+
+                <?php if (!empty($result["thumb"])) : ?>
+
+                    <img class="manga-img"
+                         src="<?php se($result, "thumb"); ?>"
+                         width="250">
+
+                <?php endif; ?>
+
+                <br><br>
+
+                <a class="btn btn-secondary"
+                   href="<?php echo get_url("admin/list_manga.php"); ?>">
+                    Back to List
+                </a>
+
+            <?php else : ?>
+
+                <p>Manga not found</p>
+
+            <?php endif; ?>
+
+        </div>
+
+    </div>
 
 </div>
 
