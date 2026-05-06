@@ -199,7 +199,7 @@ try {
                         <td>
 
                             <a class="btn btn-primary btn-sm mb-1"
-                                href="<?php echo get_url("view_manga.php"); ?>?id=<?php se($record, "id"); ?>">
+                                href="<?php echo get_url("admin/view_manga.php"); ?>?id=<?php se($record, "id"); ?>">
                                 Details
                             </a>
 
