@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . "/../../../partials/nav.php");
+require(__DIR__ . "/../../../lib/functions.php");
 
 if (!has_role("Admin")) {
     flash("No permission", "danger");
@@ -31,4 +31,5 @@ if ($id > 0) {
     }
 }
 
-die(header("Location: " . get_url("admin/list_manga.php")));
+header("Location: " . get_url("admin/list_manga.php"));
+exit();
