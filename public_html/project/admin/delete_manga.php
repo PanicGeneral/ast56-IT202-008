@@ -1,6 +1,8 @@
 <?php
 require(__DIR__ . "/../../../lib/functions.php");
 
+session_start();
+
 if (!has_role("Admin")) {
     flash("No permission", "danger");
     die(header("Location: " . get_url("landing.php")));
