@@ -33,8 +33,6 @@ function fetch_manga($text, $nsfw = false, $type = "All")
             "status" => $manga["status"] ?? "Unknown",
             "thumb" => $manga["thumb"] ?? "",
             "summary" => $manga["summary"] ?? "",
-
-            // FIX: convert array → string
             "genres" => isset($manga["genres"]) ? implode(", ", $manga["genres"]) : "N/A",
 
             "nsfw" => $manga["nsfw"] ?? false,
@@ -78,8 +76,6 @@ function search_series($search, $nsfw = false, $type = "All")
                 "thumb" => $manga["thumb"] ?? "",
                 "type" => $manga["type"] ?? "",
                 "status" => $manga["status"] ?? "Unknown",
-
-                // FIX: convert genres array to string
                 "genres" => isset($manga["genres"]) ? implode(", ", $manga["genres"]) : "N/A",
 
                 "nsfw" => $manga["nsfw"] ?? 0,
