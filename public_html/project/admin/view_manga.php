@@ -1,5 +1,5 @@
 <?php
-require(__DIR__ . "/../../partials/nav.php");
+require(__DIR__ . "/../../../partials/nav.php");
 
 $id = se($_GET, "id", -1, false);
 
@@ -72,4 +72,4 @@ try {
 
 </div>
 
-<?php require(__DIR__ . "/../../partials/flash.php"); ?>
+<?php require(__DIR__ . "/../../../partials/flash.php"); ?>
