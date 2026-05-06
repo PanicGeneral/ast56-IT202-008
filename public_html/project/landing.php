@@ -1,6 +1,16 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 
+if (is_logged_in() && isset($_POST["favorite"])) {
+
+    $manga_id = se($_POST, "manga_id", -1, false);
+
+    if ($manga_id > 0) {
+
+        add_favorite(get_user_id(), $manga_id);
+    }
+}
+
 if (is_logged_in(true)) {
     error_log("Session data: " . var_export($_SESSION, true));
 }
@@ -79,18 +89,18 @@ $form = [
         "value" => se($_GET, "text", "", false),
     ],
     [
-    "type" => "select",
-    "id" => "type",
-    "name" => "type",
-    "label" => "Type",
-    "options" => [
-        ["" => "All"],
-        ["japan" => "Japan"],
-        ["korea" => "Korea"],
-        ["china" => "China"]
+        "type" => "select",
+        "id" => "type",
+        "name" => "type",
+        "label" => "Type",
+        "options" => [
+            ["" => "All"],
+            ["japan" => "Japan"],
+            ["korea" => "Korea"],
+            ["china" => "China"]
+        ],
+        "value" => se($_GET, "type", "", false),
     ],
-    "value" => se($_GET, "type", "", false),
-],
     [
         "type" => "select",
         "id" => "nsfw",
@@ -102,6 +112,15 @@ $form = [
             ["1" => "Yes"]
         ],
         "value" => se($_GET, "nsfw", "", false),
+    ],
+    [
+        "type" => "number",
+        "id" => "limit",
+        "name" => "limit",
+        "label" => "Limit",
+        "value" => se($_GET, "limit", 10, false),
+        "min" => 1,
+        "max" => 100
     ]
 ];
 ?>
