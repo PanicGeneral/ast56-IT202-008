@@ -114,6 +114,24 @@ require(__DIR__ . "/../lib/functions.php");
 
                         </li>
 
+
+
+                    <?php endif; ?>
+
+                    <?php if (has_role("Admin")) : ?>
+
+                        <li class="nav-item">
+
+                            <a
+                                class="nav-link"
+                                href="<?php echo get_url('admin/manage_associations.php', true); ?>">
+
+                                Manage Associations
+
+                            </a>
+
+                        </li>
+
                     <?php endif; ?>
 
                 <?php endif; ?>
