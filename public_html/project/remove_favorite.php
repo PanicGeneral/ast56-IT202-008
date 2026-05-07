@@ -1,6 +1,8 @@
 <?php
 require(__DIR__ . "/../../lib/functions.php");
 
+session_start();
+
 is_logged_in(true);
 
 $manga_id = se($_POST, "manga_id", -1, false);
