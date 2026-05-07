@@ -127,6 +127,12 @@ try {
                     $back_url = "public_profile.php?id=" . $profile_user_id;
                     $back_text = "Back to Profile";
                 }
+
+                if ($source === "unassociated") {
+
+                    $back_url = "admin/unassociated_manga.php";
+                    $back_text = "Back to Unassociated Manga";
+                }
                 ?>
 
                 <a

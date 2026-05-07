@@ -20,8 +20,8 @@ if ($limit < 1) {
     $limit = 1;
 }
 
-if ($limit > 50) {
-    $limit = 50;
+if ($limit > 100) {
+    $limit = 100;
 }
 
 $order = "ORDER BY created DESC";
@@ -98,7 +98,7 @@ try {
                 type="number"
                 name="limit"
                 min="1"
-                max="50"
+                max="100"
                 value="<?php se($_GET, 'limit', 10); ?>">
         </div>
 

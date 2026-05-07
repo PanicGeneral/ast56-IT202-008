@@ -100,6 +100,22 @@ require(__DIR__ . "/../lib/functions.php");
 
                     </li>
 
+                    <?php if (has_role("Admin")) : ?>
+
+                        <li class="nav-item">
+
+                            <a
+                                class="nav-link"
+                                href="<?php echo get_url('admin/unassociated_manga.php', true); ?>">
+
+                                Unassociated Manga
+
+                            </a>
+
+                        </li>
+
+                    <?php endif; ?>
+
                 <?php endif; ?>
 
                 <?php if (is_logged_in()) : ?>
