@@ -18,17 +18,12 @@ if (has_role("Admin")) {
 
     header(
         "Location: " .
-        get_url(
-            "admin/manga_users.php",
-            true
-        ) .
-        "?manga_id=" . $manga_id
+            get_url("admin/manga_users.php") .
+            "?manga_id=" . $manga_id
     );
-
 } else {
 
     header("Location: " . get_url("favorites.php"));
 }
 
 exit();
-?>
