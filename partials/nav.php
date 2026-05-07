@@ -40,18 +40,21 @@ require(__DIR__ . "/../lib/functions.php");
             <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php get_url('landing.php', true); ?>">Landing</a>
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('landing.php', true); ?>">Landing</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php get_url('profile.php', true); ?>">Profile</a>
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('profile.php', true); ?>">Profile</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('favorites.php', true); ?>">My Favorites</a>
                     </li>
                 <?php endif; ?>
                 <?php if (!is_logged_in()) : ?>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php get_url('login.php', true); ?>">Login</a>
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('login.php', true); ?>">Login</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php get_url('register.php', true); ?>">Register</a>
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('register.php', true); ?>">Register</a>
                     </li>
                 <?php endif; ?>
                 <?php if (has_role("Admin")) : ?>
@@ -61,11 +64,11 @@ require(__DIR__ . "/../lib/functions.php");
                         </a>
                         <ul class="dropdown-menu">
 
-                            <li><a class="dropdown-item" aria-current="page" href="<?php get_url('admin/create_role.php', true); ?>">Create Role</a>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/create_role.php', true); ?>">Create Role</a>
                             </li>
-                            <li><a class="dropdown-item" aria-current="page" href="<?php get_url('admin/list_roles.php', true); ?>">List Roles</a>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/list_roles.php', true); ?>">List Roles</a>
                             </li>
-                            <li><a class="dropdown-item" aria-current="page" href="<?php get_url('admin/assign_roles.php', true); ?>">Assign Roles</a>
+                            <li><a class="dropdown-item" aria-current="page" href="<?php echo get_url('admin/assign_roles.php', true); ?>">Assign Roles</a>
                             </li>
 
                         </ul>
@@ -77,16 +80,65 @@ require(__DIR__ . "/../lib/functions.php");
                             Manga
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="<?php get_url('admin/create_manga.php', true); ?>">Create Manga</a></li>
-                            <li><a class="dropdown-item" href="<?php get_url('admin/list_manga.php', true); ?>">List Manga</a></li>
-                            <li><a class="dropdown-item" href="<?php get_url('admin/create_series.php', true); ?>">Create Multiple Mangas</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_manga.php', true); ?>">Create Manga</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/list_manga.php', true); ?>">List Manga</a></li>
+                            <li><a class="dropdown-item" href="<?php echo get_url('admin/create_series.php', true); ?>">Create Multiple Mangas</a></li>
                         </ul>
                     </li>
                 <?php endif; ?>
-                
+                <?php if (has_role("Admin")) : ?>
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="<?php echo get_url('admin/all_favorites.php'); ?>">
+
+                            User Favorites
+
+                        </a>
+
+                    </li>
+
+                    <?php if (has_role("Admin")) : ?>
+
+                        <li class="nav-item">
+
+                            <a
+                                class="nav-link"
+                                href="<?php echo get_url('admin/unassociated_manga.php', true); ?>">
+
+                                Unassociated Manga
+
+                            </a>
+
+                        </li>
+
+
+
+                    <?php endif; ?>
+
+                    <?php if (has_role("Admin")) : ?>
+
+                        <li class="nav-item">
+
+                            <a
+                                class="nav-link"
+                                href="<?php echo get_url('admin/manage_associations.php', true); ?>">
+
+                                Manage Associations
+
+                            </a>
+
+                        </li>
+
+                    <?php endif; ?>
+
+                <?php endif; ?>
+
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item">
-                        <a class="nav-link" aria-current="page" href="<?php get_url('logout.php', true); ?>">Logout</a>
+                        <a class="nav-link" aria-current="page" href="<?php echo get_url('logout.php', true); ?>">Logout</a>
                     </li>
                 <?php endif; ?>
             </ul>
