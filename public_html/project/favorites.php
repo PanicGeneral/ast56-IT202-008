@@ -9,6 +9,13 @@ $text = se($_GET, "text", "", false);
 $type = se($_GET, "type", "", false);
 $nsfw = se($_GET, "nsfw", "", false);
 
+$limit = (int)se($_GET, "limit", 10, false);
+
+if ($limit < 1 || $limit > 100) {
+
+    $limit = 10;
+}
+
 $params = [
     ":uid" => $user_id
 ];
@@ -43,13 +50,27 @@ if ($nsfw !== "" && ($nsfw === "0" || $nsfw === "1")) {
     $params[":nsfw"] = $nsfw;
 }
 
-$query .= " ORDER BY uf.created DESC";
+$query .= " ORDER BY uf.created DESC LIMIT :limit";
+
+$params[":limit"] = $limit;
+
 
 $db = getDB();
 
 $stmt = $db->prepare($query);
 
-$stmt->execute($params);
+foreach ($params as $key => $value) {
+
+    if ($key === ":limit") {
+
+        $stmt->bindValue($key, $value, PDO::PARAM_INT);
+    } else {
+
+        $stmt->bindValue($key, $value);
+    }
+}
+
+$stmt->execute();
 
 $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
@@ -59,12 +80,25 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <h1>My Favorites</h1>
 
     <p class="text-muted">
-        Total Favorites: <?php echo count($favorites); ?>
+        Showing <?php echo count($favorites); ?> favorite manga
     </p>
 
     <form class="mb-4">
 
         <div class="row">
+
+            <div class="col-md-2">
+
+                <input
+                    type="number"
+                    name="limit"
+                    class="form-control"
+                    min="1"
+                    max="100"
+                    placeholder="Limit"
+                    value="<?php echo $limit; ?>">
+
+            </div>
 
             <div class="col-md-4">
 
@@ -137,7 +171,7 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             </div>
 
-            <div class="col-md-2 d-flex gap-2">
+            <div class="col-md-12 mt-3 d-flex gap-2">
 
                 <button
                     type="submit"
@@ -158,6 +192,20 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
         </div>
+
+    </form>
+    <form
+        method="POST"
+        action="<?php echo get_url('remove_all_favorites.php', true); ?>"
+        class="mb-3">
+
+        <button
+            type="submit"
+            class="btn btn-danger">
+
+            Remove All Favorites
+
+        </button>
 
     </form>
 
@@ -243,6 +291,7 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 </button>
 
                             </form>
+
 
                         </div>
 
