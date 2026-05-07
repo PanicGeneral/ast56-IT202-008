@@ -1,9 +1,7 @@
 <?php
 require(__DIR__ . "/../../partials/nav.php");
 
-is_logged_in(true);
-
-$user_id = get_user_id();
+$user_id = se($_GET, "id", -1, false);
 
 $text = se($_GET, "text", "", false);
 $type = se($_GET, "type", "", false);
@@ -16,9 +14,38 @@ if ($limit < 1 || $limit > 100) {
     $limit = 10;
 }
 
-$params = [
-    ":uid" => $user_id
-];
+if ($user_id < 1) {
+
+    flash("Invalid user", "danger");
+
+    header("Location: " . get_url("landing.php"));
+
+    exit();
+}
+
+$db = getDB();
+
+$stmt = $db->prepare("
+SELECT id, username, created
+FROM Users
+WHERE id = :id
+LIMIT 1
+");
+
+$stmt->execute([
+    ":id" => $user_id
+]);
+
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+if (!$user) {
+
+    flash("User not found", "danger");
+
+    header("Location: " . get_url("landing.php"));
+
+    exit();
+}
 
 $query = "
 SELECT m.*
@@ -28,6 +55,10 @@ JOIN `IT202-S26-Manga` m
 WHERE uf.user_id = :uid
 AND uf.is_active = 1
 ";
+
+$params = [
+    ":uid" => $user_id
+];
 
 if (!empty($text)) {
 
@@ -54,9 +85,6 @@ $query .= " ORDER BY uf.created DESC LIMIT :limit";
 
 $params[":limit"] = $limit;
 
-
-$db = getDB();
-
 $stmt = $db->prepare($query);
 
 foreach ($params as $key => $value) {
@@ -77,22 +105,31 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
 <div class="container-fluid">
 
-    <h1>My Favorites</h1>
+    <div class="mb-4">
 
-    <h2>
-    Welcome,
-    <a href="public_profile.php?id=<?php echo get_user_id(); ?>">
+        <h1>
+            <?php se($user, "username"); ?>
+        </h1>
+        <p class="text-muted">
 
-        <?php echo get_username(); ?>
+            Joined:
+            <?php echo date("F j, Y", strtotime($user["created"])); ?>
 
-    </a>
-</h2>
+        </p>
+        <p class="text-muted">
 
-    <p class="text-muted">
-        Showing <?php echo count($favorites); ?> favorite manga
-    </p>
+            Showing <?php echo count($favorites); ?> favorite manga
+
+        </p>
+
+    </div>
 
     <form class="mb-4">
+
+        <input
+            type="hidden"
+            name="id"
+            value="<?php echo $user_id; ?>">
 
         <div class="row">
 
@@ -104,8 +141,8 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
                     class="form-control"
                     min="1"
                     max="100"
-                    placeholder="Limit"
-                    value="<?php echo $limit; ?>">
+                    value="<?php echo $limit; ?>"
+                    placeholder="Limit">
 
             </div>
 
@@ -191,7 +228,7 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 </button>
 
                 <a
-                    href="favorites.php"
+                    href="public_profile.php?id=<?php echo $user_id; ?>"
                     class="btn btn-secondary">
 
                     Reset
@@ -203,25 +240,13 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
         </div>
 
     </form>
-    <form
-        method="POST"
-        action="<?php echo get_url('remove_all_favorites.php', true); ?>"
-        class="mb-3">
-
-        <button
-            type="submit"
-            class="btn btn-danger">
-
-            Remove All Favorites
-
-        </button>
-
-    </form>
 
     <?php if (empty($favorites)) : ?>
 
         <div class="alert alert-info">
-            You have no favorite manga yet.
+
+            No results available.
+
         </div>
 
     <?php else : ?>
@@ -250,8 +275,39 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="card-body">
 
                             <h5 class="card-title">
+
                                 <?php se($manga, "title"); ?>
+
                             </h5>
+
+                            <p class="mb-1">
+
+                                <strong>Type:</strong>
+                                <?php se($manga, "type"); ?>
+
+                            </p>
+
+                            <p class="mb-1">
+
+                                <strong>Status:</strong>
+                                <?php se($manga, "status"); ?>
+
+                            </p>
+
+                            <p class="mb-1">
+
+                                <strong>Genres:</strong>
+                                <?php se($manga, "genres"); ?>
+
+                            </p>
+
+                            <p class="mb-2">
+
+                                <strong>NSFW:</strong>
+
+                                <?php echo se($manga, "nsfw", 0, false) ? "Yes" : "No"; ?>
+
+                            </p>
 
                             <p class="card-text">
 
@@ -260,6 +316,7 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
                                 $summary = se($manga, "summary", "", false);
 
                                 if (strlen($summary) > 120) {
+
                                     $summary = substr($summary, 0, 120) . "...";
                                 }
 
@@ -274,33 +331,12 @@ $favorites = $stmt->fetchAll(PDO::FETCH_ASSOC);
                         <div class="card-footer">
 
                             <a
-                                href="<?php echo get_url('view_details.php', true); ?>?id=<?php se($manga, "id"); ?>&source=favorites"
+                                href="<?php echo get_url('view_details.php', true); ?>?id=<?php se($manga, "id"); ?>&source=profile&user_id=<?php echo $user_id; ?>"
                                 class="btn btn-primary btn-sm">
 
                                 View
 
                             </a>
-
-                            <form
-                                method="POST"
-                                action="<?php echo get_url('remove_favorite.php', true); ?>"
-                                class="d-inline">
-
-                                <input
-                                    type="hidden"
-                                    name="manga_id"
-                                    value="<?php se($manga, "id"); ?>">
-
-                                <button
-                                    type="submit"
-                                    class="btn btn-danger btn-sm">
-
-                                    Remove
-
-                                </button>
-
-                            </form>
-
 
                         </div>
 

@@ -86,6 +86,21 @@ require(__DIR__ . "/../lib/functions.php");
                         </ul>
                     </li>
                 <?php endif; ?>
+                <?php if (has_role("Admin")) : ?>
+
+                    <li class="nav-item">
+
+                        <a
+                            class="nav-link"
+                            href="<?php echo get_url('admin/all_favorites.php'); ?>">
+
+                            User Favorites
+
+                        </a>
+
+                    </li>
+
+                <?php endif; ?>
 
                 <?php if (is_logged_in()) : ?>
                     <li class="nav-item">
