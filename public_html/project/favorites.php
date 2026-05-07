@@ -15,7 +15,7 @@ $params = [
 
 $query = "
 SELECT m.*
-FROM `IT202-S26-userfavorites` uf
+FROM `IT202-S26-UserFavorites` uf
 JOIN `IT202-S26-Manga` m
     ON uf.manga_id = m.id
 WHERE uf.user_id = :uid
