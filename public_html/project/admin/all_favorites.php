@@ -9,7 +9,7 @@ if (!has_role("Admin")) {
 
     exit();
 }
-
+$username = se($_GET, "username", "", false);
 $text = se($_GET, "text", "", false);
 $type = se($_GET, "type", "", false);
 $nsfw = se($_GET, "nsfw", "", false);
@@ -38,6 +38,9 @@ FROM `IT202-S26-Manga` m
 JOIN `IT202-S26-UserFavorites` uf
     ON uf.manga_id = m.id
 
+JOIN Users u
+    ON uf.user_id = u.id   
+
 WHERE uf.is_active = 1
 ";
 
@@ -46,6 +49,13 @@ if (!empty($text)) {
     $query .= " AND m.title LIKE :text";
 
     $params[":text"] = "%$text%";
+}
+
+if (!empty($username)) {
+
+    $query .= " AND u.username LIKE :username";
+
+    $params[":username"] = "%$username%";
 }
 
 if (!empty($type) && $type !== "All") {
@@ -79,7 +89,6 @@ foreach ($params as $key => $value) {
     if ($key === ":limit") {
 
         $stmt->bindValue($key, $value, PDO::PARAM_INT);
-
     } else {
 
         $stmt->bindValue($key, $value);
@@ -118,7 +127,18 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             </div>
 
-            <div class="col-md-4">
+            <div class="col-md-2">
+
+                <input
+                    type="text"
+                    name="username"
+                    class="form-control"
+                    placeholder="Search Username"
+                    value="<?php echo htmlspecialchars($username); ?>">
+
+            </div>
+
+            <div class="col-md-3">
 
                 <input
                     type="text"
@@ -129,7 +149,7 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
 
                 <select name="type" class="form-select">
 
@@ -163,11 +183,11 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
             </div>
 
-            <div class="col-md-3">
+            <div class="col-md-2">
 
                 <select name="nsfw" class="form-select">
 
-                    <option value="">All</option>
+                    <option value="">NSFW</option>
 
                     <option
                         value="0"
