@@ -73,13 +73,15 @@ function search_series($search, $nsfw = false, $type = "All")
             $transformedResult[] = [
                 "id" => $manga["id"] ?? "",
                 "title" => $manga["title"] ?? "",
-                "thumb" => $manga["thumb"] ?? "",
-                "type" => $manga["type"] ?? "",
+                "sub_title" => $manga["sub_title"] ?? "",
                 "status" => $manga["status"] ?? "Unknown",
+                "thumb" => $manga["thumb"] ?? "",
+                "summary" => $manga["summary"] ?? "",
                 "genres" => isset($manga["genres"]) ? implode(", ", $manga["genres"]) : "N/A",
 
                 "nsfw" => $manga["nsfw"] ?? 0,
-                "is_api" => 1
+                "type" => $manga["type"] ?? "",
+                
             ];
         }
     }

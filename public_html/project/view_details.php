@@ -6,6 +6,8 @@ $id = se($_GET, "id", -1, false);
 
 $source = se($_GET, "source", "landing", false);
 
+$profile_user_id = se($_GET, "user_id", -1, false);
+
 if ($id < 1) {
 
     flash("Invalid manga id", "danger");
@@ -120,6 +122,11 @@ try {
                     $back_text = "Back to Favorites";
                 }
 
+                if ($source === "profile" && $profile_user_id > 0) {
+
+                    $back_url = "public_profile.php?id=" . $profile_user_id;
+                    $back_text = "Back to Profile";
+                }
                 ?>
 
                 <a
